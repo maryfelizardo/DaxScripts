@@ -1,0 +1,22 @@
+CalendarTable = 
+VAR StartDate = MIN('Sales_Data 2022-2023'[OrderDate])  -- Change the start date as needed
+VAR EndDate = MAX('Sales_Data 2022-2023'[OrderDate])   -- Change the end date as needed
+RETURN
+ADDCOLUMNS(
+    CALENDAR(StartDate, EndDate),
+    "Year", YEAR([Date]),
+    "Month", FORMAT([Date], "MMMM"),  -- Full month name (January, February, etc.)
+    "Month Short", FORMAT([Date], "MMM"),  -- Short month name (Jan, Feb, etc.)
+    "Month Number", MONTH([Date]),
+    "Quarter", "Q" & FORMAT([Date], "Q"),  -- Q1, Q2, Q3, Q4
+    "Weekday", FORMAT([Date], "dddd"),  -- Full weekday name (Monday, Tuesday, etc.)
+    "Weekday Short", FORMAT([Date], "ddd"),  -- Short weekday name (Mon, Tue, etc.)
+    "Weekday Number", WEEKDAY([Date], 2),  -- 1 = Monday, 2 = Tuesday...
+    "Day of Year", FORMAT([Date], "DDD"),  -- Day of the year (1-365)
+    "ISO Year", YEAR([Date] - WEEKDAY([Date], 2) + 4),  -- ISO Week Year
+    "ISO Week Number", WEEKNUM([Date], 21),  -- ISO 8601 Week Number
+    "Week Number", WEEKNUM([Date]),  -- Standard Week Number
+    "Is Weekend", IF(WEEKDAY([Date],2) > 5, "Yes", "No"),  -- Identifies weekends
+    "Fiscal Year", "FY" & IF(MONTH([Date]) >= 7, YEAR([Date]) + 1, YEAR([Date])),  -- Fiscal Year (Starts in July)
+    "Fiscal Quarter", "FQ" & CEILING(MOD(MONTH([Date]) - 7, 12) / 3 + 1, 1)  -- Fiscal Quarter (Assuming FY starts in July)
+)
